@@ -21,13 +21,13 @@ RSApp.TEMPLATES = {
  **/
 RSApp.HBUtil = {
     handleIt: function(tplSrcId, tplCtx, attachToElem) {
-        debugger;
         try {
             var templateSrc = $(tplSrcId).html();
             var template = Handlebars.compile(templateSrc);
             var context = tplCtx || {};
-            var templateHtml = template(context);
-            attachToElem.append(templateHtml);
+            var templateElem = $(template(context));
+            $(attachToElem).prepend(templateElem);
+            return templateElem;
         } catch (e) {
             throw 'Failed on handling template: ' + tplSrcId;
         }
@@ -42,13 +42,40 @@ RSApp.HBUtil = {
  *
  **/
 RSApp.List = function(id) {
+    var self = this;
     this.id = id;
-    this.elem = $(id);
-    this.listNotesElem = this.elem.find('.list-notes')[0];
+    //elements of the list
+    this.elem = $('#' + id);
+    this.listNotesElem = this.elem.find('.list-notes');
+    this.addNoteBtn = this.elem.find('.add-post');
+    this.emptyMsgElem = this.elem.find('.empty');
+
+    //hook up the events
+    this.addNoteBtn.on('click', function(e) {
+        self.onAddnewNote();
+    });
+
+    //load and populate the notes to the list
     this.loadNotes();
 };
 
 RSApp.List.prototype = {
+    addNoteElemToList: function(content) {
+        return RSApp.HBUtil.handleIt(RSApp.TEMPLATES.NOTE, {
+            content: content || ''
+        }, this.listNotesElem);
+    },
+    onAddnewNote: function() {
+        if (this.emptyMsgElem.is(':visible')) {
+            this.emptyMsgElem.hide();
+        }
+        var newNoteElem = this.addNoteElemToList();
+        var contentElem = newNoteElem.children('.content');
+        contentElem.attr('contentEditable', 'true');
+        setTimeout(function() {
+            contentElem.focus();
+        }, 500);
+    },
     /* save on:
      * notes changed (edit, delete, add, moved)
      */
@@ -63,20 +90,32 @@ RSApp.List.prototype = {
             this.clearNotes();
         }
     },
+    getNotesCount: function() {
+        return this.listNotesElem.find('.note > .content').length;
+    },
     loadNotes: function() {
-        debugger;
-        /*todo: this.listNotesElem scope issue
-        * note is being 0, instead of content
-        */
-        var lsData = localStorage.getObject(this.id);
-        $.each($(lsData), function(note) {
-            RSApp.HBUtil.handleIt(RSApp.TEMPLATES.NOTE, {
-                content: note
-            }, this.listNotesElem);
+        var lsData = localStorage.getObject(this.id) || [];
+        var self = this;
+        if (lsData.length > 0) {
+            this.emptyMsgElem.hide();
+        }
+        $.each(lsData, function(index, content) {
+            self.addNoteElemToList(content);
         });
     },
     clearNotes: function() {
         localStorage.removeItem(this.id);
+        this.listNotesElem.remove('.note');
+        this.emptyMsgElem.show();
+    },
+    deleteNote: function(elemToRemove) {
+        if (this.getNotesCount() == 1) {
+            this.clearNotes();
+        } else {
+            var elem = event.target;
+            elemToRemove.remove();
+            this.saveNotes();
+        }
     }
 };
 
@@ -101,8 +140,8 @@ $(document).ready(function() {
         boardDate: 'May 26, 2015'
     };
     RSApp.HBUtil.handleIt(RSApp.TEMPLATES.HEADER, headerTemplateCtx, $('#title-section'));
-    $('#list-container .list').each(function(list) {
-        var listId = list.id;
+    $('#list-container .list').each(function() {
+        var listId = this.id;
         localStorage.setObject(listId, ['test', 'test2', 'test3']);
         RSApp.allLists[listId] = new RSApp.List(listId);
     });
