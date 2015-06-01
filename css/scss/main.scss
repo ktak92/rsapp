@@ -1,0 +1,21 @@
+// Use Compass
+@import "compass";
+
+// Reset default browser styles using Normalize
+@import "base/normalize";
+
+// Set variables and reusable mixins
+@import "base/config";
+@import "base/mixins";
+
+// Import typical layout styles
+@import "base/grid";
+
+// Import reusable modules
+@import "modules/buttons";
+
+// Use Font Awesome for icons
+@import "base/icons";
+
+// Specific project styles, add any section specific sass modules here
+@import "pages/home";

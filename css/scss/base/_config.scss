@@ -1,0 +1,51 @@
+//**
+// Project Settings
+//**
+
+// Consistent settings
+$br: 5px; // Border-radius
+$btn-br: 5px; // Button border-radius
+$padding: 40px; // Padding and margins
+$line-height: 44px; // Consistent height for buttons, inputs etc.
+
+// Responsive breakpoints
+$small-break: 480px;
+$big-break: 780px;
+
+// Better default colors
+// Cool
+$aqua:  #40898C;
+$blue:  #0074d9;
+$navy:  #001f3f;
+$teal:  #39cccc;
+$green: #2ecc40;
+$olive: #3d9970;
+$lime:  #01ff70;
+// Warm
+$yellow:  #FFC;
+$orange:  #F6921E;
+$red:     #ff4136;
+$fuchsia: #f012be;
+$purple:  #b10dc9;
+$maroon:  #85144b;
+// Gray Scale
+$white:  #fff;
+$silver: #ddd;
+$grey:   #F5F6F7;
+$black:  #111;
+
+@import url(http://fonts.googleapis.com/css?family=Quando|Judson:400,700);
+$header-font: 'Quando', serif;
+$primary-font: 'Judson', serif;
+
+
+// Project color variables
+$primary-color: $grey;
+$secondary-color: $orange;
+$tertiary-color: $aqua;
+$default-text-color: #717274;
+
+$danger-color: $red; // Bad color for errors, validation etc.
+$success-color: $green; // Good color for success etc.
+$info-color: $blue; // Good color for success etc.
+$warning-color: $orange; // Good color for success etc.

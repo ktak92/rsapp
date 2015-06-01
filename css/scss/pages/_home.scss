@@ -1,0 +1,115 @@
+/* base styling */
+
+html {
+    font-family: $primary-font;
+    box-sizing: border-box;
+    color: $default-text-color;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+h1,
+h2,
+h3 {
+    font-family: $header-font;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+@mixin ellipses {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+/** mobile first styles **/
+
+header {
+    background: $grey;
+    border-bottom: solid 2px $silver;
+    margin-bottom: 20px;
+    padding: 10px;
+    .board-title {
+        color: $secondary-color;
+        font-size: 1.2em;
+        display: block;
+    }
+    .board-date {
+        display: inline-block;
+        font-size: 0.8em;
+        margin-bottom: 0.67em;
+    }
+}
+
+.list {
+    border: 1px solid $grey;
+    text-align: center;
+    cursor: pointer;
+    .list-header {
+        position: relative;
+        font-family: $header-font;
+        background: $grey;
+        padding: 10px;
+        font-size: 1.1em;
+        font-weight: bold;
+        border-bottom: 2px solid $grey;
+        margin-bottom: 20px;
+        @include ellipses;
+        &:hover {
+            background: darken($grey, 5);
+        }
+        .add-post {
+            display: inline-block;
+            padding: 0;
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            right: 5px;
+            top: 9px;
+        }
+    }
+    .list-notes {
+        margin-bottom: 20px;
+        span.empty {
+            font-size: 0.9em;
+            display: block;
+            color: #AAA;
+        }
+    }
+}
+
+.note {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 250px;
+    background: $yellow;
+    -webkit-box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.46);
+    -moz-box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.46);
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.46);
+    margin: 10px 0;
+    /* style for fluid square form */
+    
+    &:before {
+        content: "";
+        display: block;
+        padding-top: 100%;
+    }
+    .content {
+        padding: 20px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        overflow: auto;
+    }
+}
+/** desktop styles **/
+
+@media screen and (min-width: $big-break) {
+    main {}
+}
