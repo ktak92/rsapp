@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Retrospect It</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
     <header>
         <div class="container">
@@ -17,39 +19,7 @@
     <img id="spinner" src="img/spinner.gif" />
     <main>
         <div id="list-container" class="container">
-            <div id="goods" class="list span4">
-                <div class="list-header">
-                    The Goods
-                    <button class="add-post btn btn-secondary">+</button>
-                </div>
-                <div class="list-actions">
-                </div>
-                <div class="list-notes">
-                    <span class="empty">No posts yet..</span>
-                </div>
-            </div>
-            <div id="bads" class="list span4">
-                <div class="list-header">
-                    The Bads
-                    <button class="add-post btn btn-secondary">+</button>
-                </div>
-                <div class="list-actions">
-                </div>
-                <div class="list-notes">
-                    <span class="empty">No posts yet..</span>
-                </div>
-            </div>
-            <div id="changes" class="list span4">
-                <div class="list-header">
-                    Changes Needed
-                    <button class="add-post btn btn-secondary">+</button>
-                </div>
-                <div class="list-actions">
-                </div>
-                <div class="list-notes">
-                    <span class="empty">No posts yet..</span>
-                </div>
-            </div>
+            <!-- inject #list-template -->
         </div>
     </main>
     <footer>
@@ -60,16 +30,33 @@
     </script>
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/handlebars-v3.0.3.js"></script>
-    <!-- hb templates -->
+
+    <!-- HB templates -->
+    <!-- header template -->
     <script type="text/x-handlebars" id="header-template">
         <h2 class="board-title">{{boardTitle}}</h2>
         <span class="board-date">{{boardDate}}</span>
     </script>
+    <!-- notes template -->
     <script type="text/x-handlebars" id="note-template">
         <div class="note" style="display: none;">
             <button class="delete-note btn btn-danger">x</button>
             <div class="content">
                 {{{content}}}
+            </div>
+        </div>
+    </script>
+    <!-- list template -->
+    <script type="text/x-handlebars" id="list-template">
+        <div id="{{id}}" class="list span4">
+            <div class="list-header">
+                {{name}}
+                <button class="add-post btn btn-secondary">+</button>
+            </div>
+            <div class="list-actions">
+            </div>
+            <div class="list-notes">
+                <span class="empty">No posts yet..</span>
             </div>
         </div>
     </script>

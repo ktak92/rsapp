@@ -13,7 +13,8 @@ RSApp.allLists = {};
  **/
 RSApp.TEMPLATES = {
     NOTE: '#note-template',
-    HEADER: '#header-template'
+    HEADER: '#header-template',
+    LIST: '#list-template'
 };
 
 /**
@@ -74,10 +75,11 @@ RSApp.List.prototype = {
      * @return the newly added .content element
      */
     addNoteElemToList: function(content) {
+        var prepend = true;
         var newNoteElem = RSApp.HBUtil.handleIt(RSApp.TEMPLATES.NOTE, {
             content: content || ''
-        }, this.listNotesElem);
-        newNoteElem.fadeIn('slow');
+        }, this.listNotesElem, prepend);
+        newNoteElem.fadeIn(250);
         return newNoteElem
             .children('.content')
             .attr('contentEditable', 'true');
@@ -88,7 +90,7 @@ RSApp.List.prototype = {
         }
         var contentElem = this.addNoteElemToList();
         var noteElem = contentElem.parent();
-        noteElem.fadeIn('slow', function() {
+        noteElem.fadeIn(250, function() {
             contentElem.focus();
         });
     },
@@ -127,7 +129,7 @@ RSApp.List.prototype = {
         var self = this;
         RSApp.storage.removeItem(this.id);
         var notesElems = $('#' + this.id + ' .note');
-        notesElems.fadeOut('slow', function() {
+        notesElems.fadeOut(250, function() {
             notesElems.remove();
             self.emptyMsgElem.show();
         });
@@ -137,7 +139,7 @@ RSApp.List.prototype = {
         if (this.getNotesCount() == 1) {
             this.clearNotes();
         } else {
-            elemToRemove.fadeOut('slow', function() {
+            elemToRemove.fadeOut(250, function() {
                 elemToRemove.remove();
                 self.saveNotes();
             });
@@ -149,13 +151,17 @@ RSApp.List.prototype = {
  * Helper for handling handlebars related tasks
  **/
 RSApp.HBUtil = {
-    handleIt: function(tplSrcId, tplCtx, attachToElem) {
+    handleIt: function(tplSrcId, tplCtx, attachToElem, prepend) {
         try {
             var templateSrc = $(tplSrcId).html();
             var template = Handlebars.compile(templateSrc);
             var context = tplCtx || {};
             var templateElem = $(template(context));
-            $(attachToElem).prepend(templateElem);
+            if (prepend) {
+                $(attachToElem).prepend(templateElem);
+            } else {
+                $(attachToElem).append(templateElem);
+            }
             return templateElem;
         } catch (e) {
             throw 'Failed on handling template: ' + tplSrcId;
@@ -181,7 +187,7 @@ RSApp.Spinner = {
 }
 
 /**
- * wrapper class for custom localStorage
+ * wrapper for custom localStorage
  **/
 RSApp.storage = {
     getObject: function(key) {
@@ -208,14 +214,28 @@ RSApp.storage = {
  * Start it up 
  **/
 $(document).ready(function() {
+    //create the header section
     var today = (new Date()).toString().split(' ').splice(1, 3).join(' ');
     var headerTemplateCtx = {
         boardTitle: 'Team 007 Retrospect Meeting',
         boardDate: today
     };
     RSApp.HBUtil.handleIt(RSApp.TEMPLATES.HEADER, headerTemplateCtx, $('#title-section'));
-    $('#list-container .list').each(function() {
-        var listId = this.id;
+
+    //create the lists section
+    var lists = [{
+        id: 'goods',
+        name: 'The Goods'
+    }, {
+        id: 'bads',
+        name: 'The Bads'
+    }, {
+        id: 'changes',
+        name: 'Changes Needed'
+    }];
+    $.each(lists, function(index, listCtx){
+        RSApp.HBUtil.handleIt(RSApp.TEMPLATES.LIST, listCtx, $('#list-container'));
+        var listId = listCtx.id;
         RSApp.allLists[listId] = new RSApp.List(listId);
     });
 });
