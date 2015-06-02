@@ -55,23 +55,39 @@ RSApp.List = function(id) {
         self.onAddnewNote();
     });
 
+    this.listNotesElem.on('click', '.delete-note', function(evt) {
+        var noteElem = $(this).parent();
+        self.deleteNote(noteElem);
+    });
+
+    this.listNotesElem.on('focus', '.content', function(evt) {
+        console.log(evt)
+    });
+
+    this.listNotesElem.on('blur', '.content', function(evt) {
+        console.log(evt)
+    });
+
     //load and populate the notes to the list
     this.loadNotes();
 };
 
 RSApp.List.prototype = {
+    /* @return the content element of the note */
     addNoteElemToList: function(content) {
-        return RSApp.HBUtil.handleIt(RSApp.TEMPLATES.NOTE, {
+        var newNoteElem = RSApp.HBUtil.handleIt(RSApp.TEMPLATES.NOTE, {
             content: content || ''
         }, this.listNotesElem);
+        return newNoteElem
+            .children('.content')
+            .attr('contentEditable', 'true');
     },
     onAddnewNote: function() {
         if (this.emptyMsgElem.is(':visible')) {
             this.emptyMsgElem.hide();
         }
-        var newNoteElem = this.addNoteElemToList();
-        var contentElem = newNoteElem.children('.content');
-        contentElem.attr('contentEditable', 'true');
+        var contentElem = this.addNoteElemToList();
+
         setTimeout(function() {
             contentElem.focus();
         }, 500);
@@ -81,8 +97,8 @@ RSApp.List.prototype = {
      */
     saveNotes: function() {
         var buffer = [];
-        this.listNotesElem.find('.note > .content').each(function(contentElem) {
-            buffer.push(contentElem.html());
+        this.listNotesElem.find('.note > .content').each(function() {
+            buffer.push($(this).html());
         })
         if (buffer.length > 0) {
             localStorage.setObject(this.id, buffer);
@@ -99,20 +115,19 @@ RSApp.List.prototype = {
         if (lsData.length > 0) {
             this.emptyMsgElem.hide();
         }
-        $.each(lsData, function(index, content) {
-            self.addNoteElemToList(content);
+        $.each(lsData, function() {
+            self.addNoteElemToList(this);
         });
     },
     clearNotes: function() {
         localStorage.removeItem(this.id);
-        this.listNotesElem.remove('.note');
+        $('#' + this.id + ' .note').remove();
         this.emptyMsgElem.show();
     },
     deleteNote: function(elemToRemove) {
         if (this.getNotesCount() == 1) {
             this.clearNotes();
         } else {
-            var elem = event.target;
             elemToRemove.remove();
             this.saveNotes();
         }
@@ -142,7 +157,7 @@ $(document).ready(function() {
     RSApp.HBUtil.handleIt(RSApp.TEMPLATES.HEADER, headerTemplateCtx, $('#title-section'));
     $('#list-container .list').each(function() {
         var listId = this.id;
-        localStorage.setObject(listId, ['test', 'test2', 'test3']);
+        //localStorage.setObject(listId, ['test', 'test2', 'test3']);
         RSApp.allLists[listId] = new RSApp.List(listId);
     });
 });
