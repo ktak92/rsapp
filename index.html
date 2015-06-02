@@ -1,19 +1,11 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]> <html class="lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]> <html class="lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
 <html>
-<!--<![endif]-->
-
 <head>
     <meta charset="utf-8">
     <title>Retrospect It</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="css/main.css">
-    <!--[if lt IE 9]> <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
 </head>
-
 <body>
     <header>
         <div class="container">
@@ -73,10 +65,10 @@
         <span class="board-date">{{boardDate}}</span>
     </script>
     <script type="text/x-handlebars" id="note-template">
-        <div class="note">
-            <span class="delete-note" style="z-index: 1; position: absolute; top: 10px; right: 10px;">[x]</span>
+        <div class="note" style="display: none;">
+            <button class="delete-note btn btn-danger">x</button>
             <div class="content">
-                {{content}}
+                {{{content}}}
             </div>
         </div>
     </script>
