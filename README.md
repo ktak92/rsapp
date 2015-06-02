@@ -5,6 +5,11 @@
 ## Usage
 Open index.html
 
+## Files that matter
+index.html - the main html file
+main.js - the main js file
+_home.scss - the main scss file
+
 ## Quick backstory
 In our weekly team retrospective meetings we use post-it notes to jot down our thoughts and organize them to three categories: the Good, the Bad, and Changes. I thought this exercise was a good opportunity to implement a retrospective board.
 
