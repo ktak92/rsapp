@@ -17,24 +17,6 @@ RSApp.TEMPLATES = {
 };
 
 /**
- * Helper for handling handlebars related tasks
- **/
-RSApp.HBUtil = {
-    handleIt: function(tplSrcId, tplCtx, attachToElem) {
-        try {
-            var templateSrc = $(tplSrcId).html();
-            var template = Handlebars.compile(templateSrc);
-            var context = tplCtx || {};
-            var templateElem = $(template(context));
-            $(attachToElem).prepend(templateElem);
-            return templateElem;
-        } catch (e) {
-            throw 'Failed on handling template: ' + tplSrcId;
-        }
-    }
-};
-
-/**
  * @class RSApp.List
  * 
  * This class represents a list (goods, bads, changes).
@@ -111,7 +93,7 @@ RSApp.List.prototype = {
         });
     },
     /* 
-     * Saves the content of the note into localStorage as an object string
+     * Saves the content of the note into RSApp.storage as an object string
      */
     saveNotes: function() {
         var buffer = [];
@@ -120,7 +102,7 @@ RSApp.List.prototype = {
             buffer.unshift(saveVal);
         })
         if (buffer.length > 0) {
-            localStorage.setObject(this.id, buffer);
+            RSApp.storage.setObject(this.id, buffer);
         } else {
             this.clearNotes();
         }
@@ -129,10 +111,10 @@ RSApp.List.prototype = {
         return this.listNotesElem.find('.note > .content').length;
     },
     /* 
-     * Loads notes from localStorage and creates and adds a new note elem
+     * Loads notes from RSApp.storage and creates and adds a new note elem
      */
     loadNotes: function() {
-        var lsData = localStorage.getObject(this.id) || [];
+        var lsData = RSApp.storage.getObject(this.id) || [];
         var self = this;
         if (lsData.length > 0) {
             this.emptyMsgElem.hide();
@@ -143,7 +125,7 @@ RSApp.List.prototype = {
     },
     clearNotes: function() {
         var self = this;
-        localStorage.removeItem(this.id);
+        RSApp.storage.removeItem(this.id);
         var notesElems = $('#' + this.id + ' .note');
         notesElems.fadeOut('slow', function() {
             notesElems.remove();
@@ -164,15 +146,62 @@ RSApp.List.prototype = {
 };
 
 /**
- * Extend Storage class to be able to handle json
+ * Helper for handling handlebars related tasks
  **/
-Storage.prototype.getObject = function(key) {
-    var value = this.getItem(key);
-    return value && JSON.parse(value);
+RSApp.HBUtil = {
+    handleIt: function(tplSrcId, tplCtx, attachToElem) {
+        try {
+            var templateSrc = $(tplSrcId).html();
+            var template = Handlebars.compile(templateSrc);
+            var context = tplCtx || {};
+            var templateElem = $(template(context));
+            $(attachToElem).prepend(templateElem);
+            return templateElem;
+        } catch (e) {
+            throw 'Failed on handling template: ' + tplSrcId;
+        }
+    }
 };
 
-Storage.prototype.setObject = function(key, value) {
-    this.setItem(key, JSON.stringify(value));
+/* spinner indicate when RSApp.storage accessed */
+RSApp.Spinner = {
+    active: false,
+    flash: function() {
+        var self = this;
+        if (self.active) {
+            return;
+        }
+        var spinnerElem = $('#spinner');
+        self.active = true;
+        spinnerElem.fadeIn(1000, function() {
+            spinnerElem.fadeOut(1000);
+            self.active = false
+        });
+    }
+}
+
+/**
+ * wrapper class for custom localStorage
+ **/
+RSApp.storage = {
+    getObject: function(key) {
+        this.showSpinner();
+        var value = localStorage.getItem(key);
+        return value && JSON.parse(value);
+    },
+    setObject: function(key, value) {
+        this.showSpinner();
+        localStorage.setItem(key, JSON.stringify(value));
+    },
+    removeItem: function(key) {
+        this.showSpinner();
+        localStorage.removeItem(key);
+    },
+    showSpinner: function() {
+        if (RSApp.Spinner) {
+            RSApp.Spinner.flash();
+        }
+    }
 };
 
 /**
